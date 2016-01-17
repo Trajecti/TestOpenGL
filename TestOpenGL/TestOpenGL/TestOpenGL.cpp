@@ -57,8 +57,8 @@ void init()
 void InitializeProgram() {
 	//creates a list of shader objects we are looking for
 	std::vector<GLuint> shaderList;
-	std::string strVertexShader = "data/calcoffset.vert";
-	std::string strFragmentShader = "data/pos.frag";
+	std::string strVertexShader = "data/calcOffset.vert";
+	std::string strFragmentShader = "data/calcColor.frag";
 
 	std::string test = Framework::LoadFile(strFragmentShader);
 	shaderList.push_back(Framework::LoadShader(GL_VERTEX_SHADER, Framework::LoadFile(strVertexShader)));
@@ -69,9 +69,11 @@ void InitializeProgram() {
 	elapsedTimeUniform = glGetUniformLocation(theProgram, "time");
 
 	GLuint loopDurationUnf = glGetUniformLocation(theProgram, "loopDuration");
+	GLuint fragLoopDurUnf = glGetUniformLocation(theProgram, "fragLoopDuration");
 
 	glUseProgram(theProgram);
 	glUniform1f(loopDurationUnf, 5.0f);
+	glUniform1f(fragLoopDurUnf, 10.0f);
 	glUseProgram(0);
 	//deletes shaders after use
 	//std::for_each(shaderList.begin(), shaderList.end(), glDeleteShader);
