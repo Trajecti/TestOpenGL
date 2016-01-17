@@ -16,10 +16,13 @@ GLuint vertexBufferObject;
 GLuint theProgram;
 GLuint vao;
 
-const float vertexPositions[] = {
-	0.75f, 0.75f, 0.0f, 1.0f,
-	0.75f, -0.75f, 0.0f, 1.0f,
-	-0.75f, -0.75f, 0.0f, 1.0f,
+const float vertexData[] = {
+	0.0f, 0.5f, 0.0f, 1.0f,
+	0.5f, -0.366f, 0.0f, 1.0f,
+	-0.5f, -0.366f, 0.0f, 1.0f,
+	1.0f, 0.0f, 0.0f, 1.0f,
+	0.0f, 1.0f, 0.0f, 1.0f,
+	0.0f, 0.0f, 1.0f, 1.0f,
 };
 
 void InitializeVertexBuffer() {
@@ -31,7 +34,7 @@ void InitializeVertexBuffer() {
 	glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObject);
 
 	//allocates  to OpenGl size of memory of data and copy data to it
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertexPositions), vertexPositions, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertexData), vertexData, GL_STATIC_DRAW);
 
 	//unbinds buffer using 0 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -84,14 +87,23 @@ void display() {
 	//binds array buffer the buffer object created and passes info on attribute array index 0
 	glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObject);
 	glEnableVertexAttribArray(0);
+	glEnableVertexAttribArray(1);
 	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, 0);
+
+	// the void (void*48) represents how much to offset in the array by 
+	// 4 (the size of a float) * 4 (the number of floats in a vec4) 
+	//* 3 (the number of vec4's in the position data).
+	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 0, (void*) 48);
+	
 	//draws triangles
 	glDrawArrays(GL_TRIANGLES, 0, 3);
 
 	glDisableVertexAttribArray(0);
+	glDisableVertexAttribArray(1);
 	glUseProgram(0);
 
 	glutSwapBuffers();
+	glutPostRedisplay();
 }
 
 
