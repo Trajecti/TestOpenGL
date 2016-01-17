@@ -15,7 +15,7 @@ const int SCREEN_HEIGHT = 480;
 // ids for program and vertex positions
 GLuint positionBufferObject;
 GLuint theProgram;
-GLuint vao;
+GLuint vao, offsetLocation;
 
 const float vertexPositions[] = {
 	0.25f, 0.25f, 0.0f, 1.0f,
@@ -87,8 +87,8 @@ void init()
 void InitializeProgram() {
 	//creates a list of shader objects we are looking for
 	std::vector<GLuint> shaderList;
-	std::string strVertexShader = "vertex_shader.txt";
-	std::string strFragmentShader = "fragment_shader.txt";
+	std::string strVertexShader = "data/offset.vert";
+	std::string strFragmentShader = "data/pos.frag";
 
 	std::string test = Framework::LoadFile(strFragmentShader);
 	shaderList.push_back(Framework::LoadShader(GL_VERTEX_SHADER, Framework::LoadFile(strVertexShader)));
@@ -96,6 +96,7 @@ void InitializeProgram() {
 
 	theProgram = Framework::CreateProgram(shaderList);
 
+	offsetLocation = glGetUniformLocation(theProgram, "offset");
 	//deletes shaders after use
 	std::for_each(shaderList.begin(), shaderList.end(), glDeleteShader);
 }
@@ -119,6 +120,7 @@ void display() {
 	//uses the program created
 	glUseProgram(theProgram);
 
+	glUniform2f(offsetLocation, fXOffset, fYOffset);
 
 	//binds array buffer the buffer object created and passes info on attribute array index 0
 	glBindBuffer(GL_ARRAY_BUFFER, positionBufferObject);
