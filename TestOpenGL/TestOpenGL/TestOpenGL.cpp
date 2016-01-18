@@ -12,10 +12,14 @@ const int SCREEN_WIDTH = 640;
 const int SCREEN_HEIGHT = 480;
 
 
+//perspective matrix
+float perspectiveMatrix[16];
+float fFrustumScale;
+
 // ids for program and vertex positions
 GLuint positionBufferObject;
-GLuint theProgram;
-GLuint vao, offsetUniform, frustumScaleUnif, zNearUnif , zFarUnif;
+GLuint theProgram, perspectiveMatrixUnif;
+GLuint vao, offsetUniform;
 
 const float vertexData[] = {
 	0.25f,  0.25f, -1.25f, 1.0f,
@@ -161,7 +165,7 @@ void init()
 void InitializeProgram() {
 	//creates a list of shader objects we are looking for
 	std::vector<GLuint> shaderList;
-	std::string strVertexShader = "data/ManualPerspective.vert";
+	std::string strVertexShader = "data/MatrixPerspective.vert";
 	std::string strFragmentShader = "data/color.frag";
 
 	std::string test = Framework::LoadFile(strFragmentShader);
@@ -172,15 +176,21 @@ void InitializeProgram() {
 
 	offsetUniform = glGetUniformLocation(theProgram, "offset");
 
-	frustumScaleUnif = glGetUniformLocation(theProgram, "frustumScale");
-	zNearUnif = glGetUniformLocation(theProgram, "zNear");
-	zFarUnif = glGetUniformLocation(theProgram, "zFar");
+	perspectiveMatrixUnif = glGetUniformLocation(theProgram, "perspectiveMatrix");
+
+	fFrustumScale = 1.0f;
+	float fzNear = 0.5f;
+	float fzFar = 3.0f;
+
+	memset(perspectiveMatrix, 0, sizeof(float) * 16);
+	perspectiveMatrix[0] = fFrustumScale;
+	perspectiveMatrix[5] = fFrustumScale;
+	perspectiveMatrix[10] = (fzFar + fzNear) / (fzNear - fzFar);
+	perspectiveMatrix[14] = (2 * fzFar * fzNear) / (fzNear - fzFar);
+	perspectiveMatrix[11] = -1.0f;
 
 	glUseProgram(theProgram);
-
-	glUniform1f(frustumScaleUnif, 1.0f);
-	glUniform1f(zNearUnif, 1.0f);
-	glUniform1f(zFarUnif, 3.0f);
+	glUniformMatrix4fv(perspectiveMatrixUnif, 1, GL_FALSE, perspectiveMatrix);
 	glUseProgram(0);
 	//deletes shaders after use
 	//std::for_each(shaderList.begin(), shaderList.end(), glDeleteShader);
@@ -188,6 +198,13 @@ void InitializeProgram() {
 
 
 void reshape(int w, int h) {
+	perspectiveMatrix[0] = fFrustumScale / (w / (float)h);
+	perspectiveMatrix[5] = fFrustumScale;
+
+	glUseProgram(theProgram);
+	glUniformMatrix4fv(perspectiveMatrixUnif, 1, GL_FALSE, perspectiveMatrix);
+	glUseProgram(0);
+
 	glViewport(0, 0, (GLsizei)w, (GLsizei)h);
 }
 
@@ -213,7 +230,7 @@ void display() {
 	// 4 (the size of a float) * 4 (the number of floats in a vec4) 
 	//* 3 (the number of vec4's in the position data).
 	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 0, (void*)colorData);
-	
+
 	//draws triangles
 	glDrawArrays(GL_TRIANGLES, 0, 36);
 
