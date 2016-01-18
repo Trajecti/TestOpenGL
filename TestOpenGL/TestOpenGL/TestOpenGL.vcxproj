@@ -88,7 +88,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;GLEW_STATIC;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>C:\Programming\C++\OpenGL\glew-1.13.0\include;C:\Programming\C++\OpenGL\glu-0.1.0\glu;C:\Programming\C++\OpenGL\freeglut\include;C:\Programming\C++\OpenGL\freeglut\include\GL;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Programming\C++\OpenGL\glm\glm;C:\Programming\C++\OpenGL\glew-1.13.0\include;C:\Programming\C++\OpenGL\glu-0.1.0\glu;C:\Programming\C++\OpenGL\freeglut\include;C:\Programming\C++\OpenGL\freeglut\include\GL;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
